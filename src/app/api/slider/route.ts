@@ -8,7 +8,7 @@ export async function GET() {
     const images = await prisma.sliderImage.findMany({
       where: { active: true },
       orderBy: { sortOrder: "asc" },
-      select: { id: true, title: true, imageUrl: true, linkUrl: true },
+      select: { id: true, title: true, badge: true, caption: true, tags: true, imageUrl: true, linkUrl: true },
     });
     return NextResponse.json(images);
   } catch {
