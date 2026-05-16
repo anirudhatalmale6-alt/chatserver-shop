@@ -110,7 +110,7 @@ export default function HomePage() {
   return (
     <div>
       {/* ── Full-Screen Hero Slider ──────────────── */}
-      <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden bg-[#0a0a1a]">
+      <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden bg-white">
         {sliderImages.length > 0 ? (
           <>
             {sliderImages.map((img, idx) => (
@@ -183,26 +183,26 @@ export default function HomePage() {
           </>
         ) : (
           /* Fallback hero when no slider images */
-          <div className="relative h-full flex items-center bg-gradient-to-br from-[#0a0a1a] via-[#0f172a] to-[#0c4a6e]">
-            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 25% 25%, #0ea5e9 0%, transparent 50%), radial-gradient(circle at 75% 75%, #10b981 0%, transparent 50%)" }} />
+          <div className="relative h-full flex items-center bg-gradient-to-br from-[#ecfdf5] via-[#f0f9ff] to-[#ecfeff]">
+            <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 25% 25%, #0ea5e9 0%, transparent 50%), radial-gradient(circle at 75% 75%, #10b981 0%, transparent 50%)" }} />
             <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
               <div className="max-w-2xl">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-800 leading-[1.1] tracking-tight">
                   {settings?.heroTitle || "Professional Chat Hosting Platform"}
                 </h1>
-                <p className="mt-6 text-lg text-gray-300 leading-relaxed max-w-lg">
+                <p className="mt-6 text-lg text-gray-500 leading-relaxed max-w-lg">
                   {settings?.heroSubtitle || "Deploy fully managed chat servers with custom bots, real-time messaging, and enterprise-grade security."}
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <Link
                     href="/pricing"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0ea5e9] text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:bg-[#38bdf8] transition-all hover:-translate-y-0.5 shadow-lg shadow-[#0ea5e9]/25"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/25 transition-all hover:-translate-y-0.5"
                   >
                     {settings?.heroButtonText || "View Plans"} <ArrowRight className="h-4 w-4" />
                   </Link>
                   <Link
                     href="/#features"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-white/20 text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:bg-white/10 transition-all"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-[#0ea5e9]/30 text-[#0ea5e9] text-sm font-bold rounded-lg uppercase tracking-wider hover:bg-[#0ea5e9]/5 transition-all"
                   >
                     Explore Features
                   </Link>

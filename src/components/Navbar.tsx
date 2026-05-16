@@ -86,17 +86,17 @@ export default function Navbar() {
   ];
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "shadow-xl" : ""}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "shadow-lg" : ""}`}>
       {/* ── Top Utility Bar ── */}
-      <div className="bg-[#0c0c1a] border-b border-white/5">
+      <div className="bg-gradient-to-r from-[#0ea5e9] to-[#10b981]">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-          <div className="flex h-9 items-center justify-between text-[11px]">
+          <div className="flex h-8 items-center justify-between text-[11px]">
             <div className="flex items-center gap-4">
               {topBarLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors uppercase tracking-wider font-medium"
+                  className="flex items-center gap-1.5 text-white/90 hover:text-white transition-colors uppercase tracking-wider font-medium"
                 >
                   <link.icon className="h-3 w-3" />
                   {link.label}
@@ -111,7 +111,7 @@ export default function Navbar() {
                     key={link.platform}
                     href={link.url}
                     {...(!link.url.startsWith("mailto:") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="text-gray-500 hover:text-[#0ea5e9] transition-colors"
+                    className="text-white/70 hover:text-white transition-colors"
                     aria-label={link.platform}
                   >
                     <Icon className="h-3.5 w-3.5" />
@@ -119,23 +119,23 @@ export default function Navbar() {
                 );
               })}
               {customerName ? (
-                <Link href="/account" className="flex items-center gap-1.5 text-[#0ea5e9] hover:text-[#38bdf8] transition-colors font-semibold ml-2">
+                <Link href="/account" className="flex items-center gap-1.5 text-white font-semibold ml-2">
                   <User className="h-3 w-3" />
                   {customerName.split(" ")[0]}
                 </Link>
               ) : (
-                <Link href="/login" className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors ml-2">
+                <Link href="/login" className="flex items-center gap-1.5 text-white/90 hover:text-white transition-colors ml-2">
                   <LogIn className="h-3 w-3" />
                   SIGN IN
                 </Link>
               )}
               {customerName ? (
-                <Link href="/account" className="ml-1 px-3 py-1 bg-[#0ea5e9] text-white rounded text-[10px] font-bold uppercase tracking-wider hover:bg-[#38bdf8] transition-colors">
+                <Link href="/account" className="ml-1 px-3 py-0.5 bg-white text-[#0ea5e9] rounded text-[10px] font-bold uppercase tracking-wider hover:bg-white/90 transition-colors">
                   Dashboard
                 </Link>
               ) : (
-                <Link href="/pricing" className="ml-1 px-3 py-1 bg-[#10b981] text-white rounded text-[10px] font-bold uppercase tracking-wider hover:bg-[#34d399] transition-colors">
-                  Get Started
+                <Link href="/register" className="ml-1 px-3 py-0.5 bg-white text-[#0ea5e9] rounded text-[10px] font-bold uppercase tracking-wider hover:bg-white/90 transition-colors">
+                  Register
                 </Link>
               )}
             </div>
@@ -144,30 +144,30 @@ export default function Navbar() {
       </div>
 
       {/* ── Main Navigation ── */}
-      <div className="bg-[#12122a]/95 backdrop-blur-md border-b border-white/5">
+      <div className={`bg-white/95 backdrop-blur-md border-b border-gray-100 transition-all duration-300 ${scrolled ? "shadow-sm" : ""}`}>
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-          <div className="flex h-14 items-center justify-between">
+          <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-[#0ea5e9] to-[#10b981] text-white shadow-lg shadow-[#0ea5e9]/20">
-                <MessageSquare className="h-4 w-4" />
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[#0ea5e9] to-[#10b981] text-white shadow-md shadow-[#0ea5e9]/20">
+                <MessageSquare className="h-4.5 w-4.5" />
               </span>
               <div className="flex flex-col leading-none">
-                <span className="text-base font-bold text-white tracking-tight">
+                <span className="text-lg font-bold text-gray-800 tracking-tight">
                   Chat<span className="text-[#0ea5e9]">Server</span>
                 </span>
-                <span className="text-[9px] text-gray-500 uppercase tracking-[0.2em] font-medium">.tr</span>
+                <span className="text-[9px] text-gray-400 uppercase tracking-[0.2em] font-medium">.tr</span>
               </div>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-0.5">
               {allLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative px-4 py-2 text-[13px] font-semibold text-gray-300 hover:text-white tracking-wider transition-colors group"
+                  className="relative px-4 py-2 text-[13px] font-semibold text-gray-500 hover:text-[#0ea5e9] tracking-wider transition-colors group"
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#0ea5e9] group-hover:w-3/4 transition-all duration-300" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] group-hover:w-3/4 transition-all duration-300 rounded-full" />
                 </Link>
               ))}
             </nav>
@@ -175,14 +175,14 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/pricing"
-                className="px-5 py-2 bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4] text-white text-xs font-bold rounded-lg uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/25 transition-all hover:-translate-y-0.5"
+                className="px-6 py-2.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-xs font-bold rounded-xl uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/20 transition-all hover:-translate-y-0.5"
               >
                 Order Now
               </Link>
             </div>
 
             <button
-              className="lg:hidden text-gray-400 hover:text-white transition-colors"
+              className="lg:hidden text-gray-500 hover:text-[#0ea5e9] transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle menu"
             >
@@ -194,19 +194,19 @@ export default function Navbar() {
 
       {/* ── Mobile Menu ── */}
       {mobileOpen && (
-        <div className="lg:hidden bg-[#12122a] border-b border-white/10">
+        <div className="lg:hidden bg-white border-b border-gray-100 shadow-lg">
           <div className="px-5 py-4 space-y-1">
             {allLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="block text-sm text-gray-300 font-semibold hover:text-[#0ea5e9] py-2.5 px-3 rounded-lg hover:bg-white/5 tracking-wider transition-colors"
+                className="block text-sm text-gray-600 font-semibold hover:text-[#0ea5e9] py-2.5 px-3 rounded-lg hover:bg-[#0ea5e9]/5 tracking-wider transition-colors"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="pt-3 border-t border-white/10 mt-3 flex flex-col gap-2">
+            <div className="pt-3 border-t border-gray-100 mt-3 flex flex-col gap-2">
               {customerName ? (
                 <Link
                   href="/account"
@@ -220,7 +220,7 @@ export default function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2 text-sm text-gray-400 font-semibold py-2 px-3"
+                  className="flex items-center gap-2 text-sm text-gray-500 font-semibold py-2 px-3"
                 >
                   <LogIn className="h-4 w-4" />
                   Sign In
@@ -229,7 +229,7 @@ export default function Navbar() {
               <Link
                 href="/pricing"
                 onClick={() => setMobileOpen(false)}
-                className="text-center py-2.5 px-5 bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4] text-white text-xs font-bold rounded-lg uppercase tracking-wider"
+                className="text-center py-2.5 px-5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-xs font-bold rounded-xl uppercase tracking-wider"
               >
                 Order Now
               </Link>
