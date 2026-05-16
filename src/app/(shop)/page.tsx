@@ -3,9 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  MessageSquare, ShieldCheck, Activity,
-  Server, Bot, ArrowRight, CheckCircle2, Users, Shield, Cpu, Zap,
-  ChevronLeft, ChevronRight,
+  MessageSquare, ShieldCheck, Activity, CheckCircle2,
+  Server, Bot, ArrowRight, Users, Shield, Cpu, Zap,
+  ChevronLeft, ChevronRight, Wifi, Award, Globe, Headphones,
+  HardDrive, Smartphone, RefreshCw, Lock, type LucideIcon,
 } from "lucide-react";
 
 interface HomeSettings {
@@ -42,34 +43,57 @@ interface SliderImg {
   linkUrl: string;
 }
 
-const features = [
+const featureBoxes: { icon: LucideIcon; title: string; desc: string; color: string }[] = [
   {
-    icon: MessageSquare, title: "Real-Time Messaging",
-    desc: "Blazing-fast message delivery with WebSocket infrastructure built for 99.9% uptime.",
-    items: ["Multi-server deployment", "Load balancing support", "Unlimited channels & users", "Instant message delivery"],
-    color: "text-[#0ea5e9]", bg: "bg-[#0ea5e9]/10",
+    icon: Wifi, title: "OPTIMISED NETWORK",
+    desc: "Multiple high-speed fibres and optimised routing across every region for the lowest possible latency with full redundancy.",
+    color: "text-[#f59e0b]",
   },
   {
-    icon: ShieldCheck, title: "Total Security",
-    desc: "End-to-end encryption, role-based access control, and advanced threat protection.",
-    items: ["End-to-end encryption", "Role-based access control", "IP & device lock protection", "Audit logs & compliance"],
-    color: "text-[#10b981]", bg: "bg-[#10b981]/10",
+    icon: Award, title: "YEARS OF HOSTING EXPERTISE",
+    desc: "A decade of chat server hosting know-how. Our team is senior, seasoned and obsessive about uptime — you can trust us to do it right.",
+    color: "text-[#ec4899]",
   },
   {
-    icon: Activity, title: "User Management",
-    desc: "Live analytics, user monitoring, and instant insight into every conversation.",
-    items: ["Real-time user monitoring", "Admin moderation tools", "Reseller management panel", "Custom permission system"],
-    color: "text-[#06b6d4]", bg: "bg-[#06b6d4]/10",
+    icon: Bot, title: "CUSTOM BOTS & AUTOMATION",
+    desc: "Deploy custom bots for weather, radio, earthquake alerts, YouTube integration and more. Full automation out of the box.",
+    color: "text-[#10b981]",
   },
-];
-
-const capabilities = [
-  { icon: Bot, label: "Custom Bots & Automation" },
-  { icon: Users, label: "Multi-Server Management" },
-  { icon: Cpu, label: "API & Webhook Integrations" },
-  { icon: Shield, label: "Anti-Spam & Moderation" },
-  { icon: Server, label: "Scalable Cloud Infrastructure" },
-  { icon: Zap, label: "Real-Time Notifications" },
+  {
+    icon: Globe, title: "WORLDWIDE LOCATIONS",
+    desc: "Servers in Europe, North America, and Asia. Choose the location closest to your users for the best performance.",
+    color: "text-[#0ea5e9]",
+  },
+  {
+    icon: Headphones, title: "24/7 HUMAN SUPPORT",
+    desc: "Real humans, around the clock. Open a ticket or reach us on Telegram — you'll get a fast, knowledgeable answer every time.",
+    color: "text-[#8b5cf6]",
+  },
+  {
+    icon: Shield, title: "ENTERPRISE DDOS PROTECTION",
+    desc: "Cutting-edge DDoS filtering at the network edge. Attacks are mitigated in real time before they ever reach your server.",
+    color: "text-[#06b6d4]",
+  },
+  {
+    icon: HardDrive, title: "DAILY OFFSITE BACKUPS",
+    desc: "Full server backups every single day, automatically pushed to offsite storage. Your data, configs and settings are always safe.",
+    color: "text-[#f97316]",
+  },
+  {
+    icon: Smartphone, title: "MOBILE CONTROL PANEL",
+    desc: "Beautifully responsive control panel — admin your chat server from anywhere, on any phone or tablet. Full power, full control.",
+    color: "text-[#3b82f6]",
+  },
+  {
+    icon: RefreshCw, title: "INSTANT PROVISIONING",
+    desc: "Your chat server is deployed automatically within minutes of payment. No waiting, no manual setup — just instant access.",
+    color: "text-[#14b8a6]",
+  },
+  {
+    icon: Lock, title: "END-TO-END ENCRYPTION",
+    desc: "All communications are encrypted with industry-standard protocols. Role-based access control and IP locking for maximum security.",
+    color: "text-[#ef4444]",
+  },
 ];
 
 export default function HomePage() {
@@ -213,49 +237,36 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* ── Features Section ─────────────────── */}
+      {/* ── Features Section — Boxed Grid ─────── */}
       {settings?.showFeaturesSection !== false && (
       <section id="features" className="py-20 sm:py-28">
-        <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-          <h2 className="section-title mb-14">{settings?.featuresSectionTitle || "Powerful Capabilities"}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {features.map((feat) => (
-              <div key={feat.title} className="feature-card">
-                <div className={`feature-icon ${feat.bg}`}>
-                  <feat.icon className={`h-7 w-7 ${feat.color}`} />
-                </div>
-                <h3 className="text-xl font-bold text-[#111827] mb-2">{feat.title}</h3>
-                <p className="text-[#6b7280] leading-relaxed mb-5 text-sm">{feat.desc}</p>
-                <ul className="space-y-2.5">
-                  {feat.items.map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-sm text-[#111827]">
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-[#10b981]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="text-sm font-bold tracking-[0.2em] uppercase text-[#10b981]">// Why Choose Us</span>
+            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-black text-gray-800 tracking-tight">
+              {settings?.featuresSectionTitle || "Why Choose"} <span className="text-[#0ea5e9]">ChatServer</span>
+            </h2>
+            <p className="mt-3 text-sm uppercase tracking-[0.15em] text-gray-400 font-medium">
+              {settings?.protocolsSectionSubtitle || "All features included"}
+            </p>
           </div>
-        </div>
-      </section>
-      )}
-
-      {/* ── Capabilities Section ────────────────── */}
-      {settings?.showProtocolsSection !== false && (
-      <section className="py-20 sm:py-28 bg-[#f8fafc]">
-        <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-          <h2 className="section-title mb-6">{settings?.protocolsSectionTitle || "Complete Platform Capabilities"}</h2>
-          <p className="text-center text-[#6b7280] mb-14 max-w-lg mx-auto">
-            {settings?.protocolsSectionSubtitle || "From messaging to moderation — every feature and workflow fully supported."}
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {capabilities.map((p) => (
-              <div key={p.label} className="feature-card flex items-center gap-4 !p-5">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0ea5e9]/10">
-                  <p.icon className="h-5 w-5 text-[#0ea5e9]" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {featureBoxes.map((feat) => (
+              <div
+                key={feat.title}
+                className="group flex items-start gap-5 rounded-2xl border border-gray-100 bg-white p-6 sm:p-7 transition-all duration-300 hover:border-[#0ea5e9]/30 hover:shadow-lg hover:shadow-[#0ea5e9]/5"
+              >
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 group-hover:bg-[#0ea5e9]/5 group-hover:border-[#0ea5e9]/20 transition-colors">
+                  <feat.icon className={`h-6 w-6 ${feat.color}`} />
                 </div>
-                <span className="text-sm font-medium text-[#111827]">{p.label}</span>
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider text-gray-800 mb-2">
+                    {feat.title}
+                  </h3>
+                  <p className="text-[13px] leading-relaxed text-gray-400">
+                    {feat.desc}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
