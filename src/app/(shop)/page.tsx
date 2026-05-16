@@ -137,7 +137,7 @@ export default function HomePage() {
   return (
     <div>
       {/* ── Full-Screen Hero Slider ──────────────── */}
-      <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden bg-white">
+      <section className="relative h-[420px] sm:h-[480px] lg:h-[520px] overflow-hidden bg-white mt-[88px]">
         {sliderImages.length > 0 ? (
           <>
             {sliderImages.map((img, idx) => (
@@ -154,27 +154,27 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-                <div className="relative z-20 h-full flex items-end pb-20 sm:pb-24">
+                <div className="relative z-20 h-full flex items-end pb-10 sm:pb-14">
                   <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
-                    <div className="max-w-2xl">
+                    <div className="max-w-xl">
                       {img.badge && (
-                        <span className="inline-block px-3.5 py-1 mb-4 rounded-md bg-[#0ea5e9] text-white text-xs font-bold uppercase tracking-wider">
+                        <span className="inline-block px-3 py-0.5 mb-3 rounded bg-[#0ea5e9] text-white text-[10px] font-bold uppercase tracking-wider">
                           {img.badge}
                         </span>
                       )}
                       {img.title && (
-                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight drop-shadow-2xl">
+                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-[1.15] tracking-tight drop-shadow-2xl">
                           {img.title}
                         </h2>
                       )}
                       {img.caption && (
-                        <p className="mt-4 text-base sm:text-lg text-white/90 leading-relaxed max-w-xl drop-shadow-lg">
+                        <p className="mt-2 text-sm text-white/85 leading-relaxed max-w-md drop-shadow-lg line-clamp-2">
                           {img.caption}
                         </p>
                       )}
-                      <div className="mt-6 flex flex-wrap items-center gap-3">
+                      <div className="mt-4 flex flex-wrap items-center gap-2">
                         {img.tags && img.tags.split(",").map((tag) => tag.trim()).filter(Boolean).map((tag) => (
-                          <span key={tag} className="px-3.5 py-1.5 rounded-md border border-white/30 bg-white/10 backdrop-blur-sm text-white text-xs font-semibold tracking-wider">
+                          <span key={tag} className="px-3 py-1 rounded border border-white/30 bg-white/10 backdrop-blur-sm text-white text-[10px] font-semibold tracking-wider">
                             {tag}
                           </span>
                         ))}
@@ -183,9 +183,9 @@ export default function HomePage() {
                             href={img.linkUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-5 py-1.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-xs font-bold rounded-md uppercase tracking-wider hover:shadow-lg transition-all hover:-translate-y-0.5"
+                            className="inline-flex items-center gap-1.5 px-4 py-1 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-[10px] font-bold rounded uppercase tracking-wider hover:shadow-lg transition-all hover:-translate-y-0.5"
                           >
-                            View Details <ArrowRight className="h-3.5 w-3.5" />
+                            View Details <ArrowRight className="h-3 w-3" />
                           </a>
                         )}
                       </div>
@@ -209,7 +209,7 @@ export default function HomePage() {
                 >
                   <ChevronRight className="h-6 w-6" />
                 </button>
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-2.5">
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2.5">
                   {sliderImages.map((_, idx) => (
                     <button
                       key={idx}
@@ -228,14 +228,14 @@ export default function HomePage() {
           <div className="relative h-full flex items-center bg-gradient-to-br from-[#ecfdf5] via-[#f0f9ff] to-[#ecfeff]">
             <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 25% 25%, #0ea5e9 0%, transparent 50%), radial-gradient(circle at 75% 75%, #10b981 0%, transparent 50%)" }} />
             <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
-              <div className="max-w-2xl">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-800 leading-[1.1] tracking-tight">
+              <div className="max-w-xl">
+                <h1 className="text-3xl sm:text-4xl font-black text-gray-800 leading-[1.15] tracking-tight">
                   {settings?.heroTitle || "Professional Chat Hosting Platform"}
                 </h1>
-                <p className="mt-6 text-lg text-gray-500 leading-relaxed max-w-lg">
+                <p className="mt-4 text-sm text-gray-500 leading-relaxed max-w-md">
                   {settings?.heroSubtitle || "Deploy fully managed chat servers with custom bots, real-time messaging, and enterprise-grade security."}
                 </p>
-                <div className="mt-8 flex flex-wrap gap-4">
+                <div className="mt-6 flex flex-wrap gap-3">
                   <Link
                     href="/pricing"
                     className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/25 transition-all hover:-translate-y-0.5"
