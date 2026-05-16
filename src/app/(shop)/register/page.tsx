@@ -54,7 +54,7 @@ export default function RegisterPage() {
             Create Account
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-base text-[#64748b]">
-            Register to manage your licenses, track orders, and more.
+            Register to manage your chat servers, track orders, and more.
           </p>
         </div>
       </section>

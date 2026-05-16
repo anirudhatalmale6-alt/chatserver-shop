@@ -51,7 +51,7 @@ function PaymentSuccessContent() {
             )}
 
             <p className="text-sm text-[#64748b] mb-8">
-              Your license will be activated shortly. You will receive a
+              Your chat server will be provisioned shortly. You will receive a
               confirmation email once everything is set up.
             </p>
 

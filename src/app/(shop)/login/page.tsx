@@ -48,7 +48,7 @@ export default function LoginPage() {
             Sign In
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-base text-[#64748b]">
-            Access your dashboard, orders, and licenses.
+            Access your dashboard, orders, and chat servers.
           </p>
         </div>
       </section>

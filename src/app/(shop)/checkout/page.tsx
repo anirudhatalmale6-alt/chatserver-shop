@@ -195,7 +195,7 @@ function CheckoutContent() {
         <div className="card-elevated p-10">
           <h2 className="text-xl font-semibold mb-3">No plan selected</h2>
           <p className="text-[#64748b] mb-6">
-            Please select a license plan from the pricing page first.
+            Please select a plan from the pricing page first.
           </p>
           <Link href="/pricing" className="btn-primary inline-flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
@@ -223,8 +223,8 @@ function CheckoutContent() {
           </div>
           <p className="text-sm text-[#64748b] mb-6">
             {paymentTab === "crypto"
-              ? "Once your payment is confirmed on-chain, your license will be activated."
-              : "Our team will verify your payment and activate your license shortly."}
+              ? "Once your payment is confirmed on-chain, your chat server will be provisioned."
+              : "Our team will verify your payment and provision your chat server shortly."}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/" className="btn-outline inline-flex items-center justify-center gap-2 text-sm">

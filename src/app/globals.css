@@ -36,18 +36,7 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
-/* ── Navbar ────────────────────────────────────── */
-.navbar-glass {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid var(--color-border);
-  transition: all 0.3s ease;
-}
-.navbar-glass.scrolled {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-}
+/* ── Navbar (dark style) ──────────────────────── */
 
 /* ── Hero ──────────────────────────────────────── */
 .hero-section {

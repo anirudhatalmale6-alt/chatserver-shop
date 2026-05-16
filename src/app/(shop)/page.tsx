@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   MessageSquare, ShieldCheck, Activity,
@@ -93,44 +93,124 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % Math.max(sliderImages.length, 1));
+  }, [sliderImages.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % Math.max(sliderImages.length, 1));
+  }, [sliderImages.length]);
+
   useEffect(() => {
     if (sliderImages.length <= 1) return;
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 4000);
+    const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, [sliderImages.length]);
+  }, [sliderImages.length, nextSlide]);
 
   return (
     <div>
-      {/* ── Hero Section ──────────────────────── */}
-      <section className="hero-section">
-        <div className="floating-shape shape-1" />
-        <div className="floating-shape shape-2" />
-        <div className="floating-shape shape-3" />
+      {/* ── Full-Screen Hero Slider ──────────────── */}
+      <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden bg-[#0a0a1a]">
+        {sliderImages.length > 0 ? (
+          <>
+            {sliderImages.map((img, idx) => (
+              <div
+                key={img.id}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                  idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+                }`}
+              >
+                <div
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{ backgroundImage: `url(${img.imageUrl})` }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-        <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mx-auto text-center animate-fade-up">
-            <h1 className="hero-title">
-              {settings?.heroTitle?.split(" ").slice(0, -2).join(" ") || "ChatServer"}{" "}
-              <span className="hero-title-gradient">
-                {settings?.heroTitle?.split(" ").slice(-2).join(" ") || "Communication Platform"}
-              </span>
-            </h1>
-            <p className="hero-subtitle mt-5 animate-fade-up anim-d1">
-              {settings?.heroSubtitle || "High-performance chat infrastructure for global platforms. Renew your license and keep your server running at full power."}
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3 animate-fade-up anim-d2">
-              <Link href="/pricing" className="btn-glow">
-                {settings?.heroButtonText || "View Plans"}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href="/#features" className="btn-outline">
-                Explore Features
-              </Link>
+                <div className="relative z-20 h-full flex items-center">
+                  <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
+                    <div className="max-w-2xl">
+                      {img.title && (
+                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight drop-shadow-2xl">
+                          {img.title}
+                        </h2>
+                      )}
+                      {img.linkUrl && (
+                        <div className="mt-8 flex flex-wrap gap-4">
+                          <a
+                            href={img.linkUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0ea5e9] text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:bg-[#38bdf8] transition-all hover:-translate-y-0.5 shadow-lg shadow-[#0ea5e9]/25"
+                          >
+                            View Details <ArrowRight className="h-4 w-4" />
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {sliderImages.length > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-5 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all border border-white/10 text-white/70 hover:text-white"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all border border-white/10 text-white/70 hover:text-white"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </button>
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-2.5">
+                  {sliderImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentSlide(idx)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        idx === currentSlide ? "bg-[#0ea5e9] w-8" : "bg-white/40 w-4 hover:bg-white/60"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          /* Fallback hero when no slider images */
+          <div className="relative h-full flex items-center bg-gradient-to-br from-[#0a0a1a] via-[#0f172a] to-[#0c4a6e]">
+            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 25% 25%, #0ea5e9 0%, transparent 50%), radial-gradient(circle at 75% 75%, #10b981 0%, transparent 50%)" }} />
+            <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
+              <div className="max-w-2xl">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight">
+                  {settings?.heroTitle || "Professional Chat Hosting Platform"}
+                </h1>
+                <p className="mt-6 text-lg text-gray-300 leading-relaxed max-w-lg">
+                  {settings?.heroSubtitle || "Deploy fully managed chat servers with custom bots, real-time messaging, and enterprise-grade security."}
+                </p>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <Link
+                    href="/pricing"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0ea5e9] text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:bg-[#38bdf8] transition-all hover:-translate-y-0.5 shadow-lg shadow-[#0ea5e9]/25"
+                  >
+                    {settings?.heroButtonText || "View Plans"} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    href="/#features"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-white/20 text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:bg-white/10 transition-all"
+                  >
+                    Explore Features
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* ── Features Section ─────────────────── */}
@@ -161,64 +241,9 @@ export default function HomePage() {
       </section>
       )}
 
-      {/* ── Image Slider ────────────────────── */}
-      {sliderImages.length > 0 && (
-        <section className="py-10 sm:py-16">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-[#e5e7eb]">
-              {sliderImages.map((img, idx) => (
-                <div
-                  key={img.id}
-                  className={idx === currentSlide ? "block" : "hidden"}
-                >
-                  {img.linkUrl ? (
-                    <a href={img.linkUrl} target="_blank" rel="noopener noreferrer" className="block">
-                      <img src={img.imageUrl} alt={img.title} className="w-full h-auto block" />
-                    </a>
-                  ) : (
-                    <img src={img.imageUrl} alt={img.title} className="w-full h-auto block" />
-                  )}
-                  {img.title && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-16 pb-8 px-8">
-                      <p className="text-white font-bold text-xl sm:text-2xl drop-shadow-lg tracking-wide">{img.title}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              {sliderImages.length > 1 && (
-                <>
-                  <button
-                    onClick={() => setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length)}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center hover:bg-white transition-colors shadow-md z-10"
-                  >
-                    <ChevronLeft className="h-5 w-5 text-[#111827]" />
-                  </button>
-                  <button
-                    onClick={() => setCurrentSlide((prev) => (prev + 1) % sliderImages.length)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 flex items-center justify-center hover:bg-white transition-colors shadow-md z-10"
-                  >
-                    <ChevronRight className="h-5 w-5 text-[#111827]" />
-                  </button>
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                    {sliderImages.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setCurrentSlide(idx)}
-                        className={`w-2.5 h-2.5 rounded-full transition-all ${idx === currentSlide ? "bg-white w-6" : "bg-white/50"}`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* ── Capabilities Section ────────────────── */}
       {settings?.showProtocolsSection !== false && (
-      <section className="py-20 sm:py-28">
+      <section className="py-20 sm:py-28 bg-[#f8fafc]">
         <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
           <h2 className="section-title mb-6">{settings?.protocolsSectionTitle || "Complete Platform Capabilities"}</h2>
           <p className="text-center text-[#6b7280] mb-14 max-w-lg mx-auto">
@@ -238,9 +263,9 @@ export default function HomePage() {
       </section>
       )}
 
-      {/* ── Products Section (conditional) ──── */}
+      {/* ── Products Section ──── */}
       {settings?.showProductsOnHome !== false && products.length > 0 && (
-        <section className="py-16 sm:py-20 bg-white/60">
+        <section className="py-16 sm:py-20">
           <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
             <h2 className="section-title mb-6">Our Products</h2>
             <p className="text-center text-[#6b7280] mb-14 max-w-lg mx-auto">
@@ -260,7 +285,7 @@ export default function HomePage() {
                       <h3 className="text-xl font-bold text-[#111827] mb-2">{product.name}</h3>
                       {lowestTier && (
                         <>
-                          <div className="text-3xl font-bold text-[#0ea5e9]" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+                          <div className="text-3xl font-bold text-[#0ea5e9]">
                             ${lowestTier.price}
                           </div>
                           <div className="text-sm text-[#6b7280]">/ {lowestTier.period}</div>
@@ -280,7 +305,7 @@ export default function HomePage() {
                     )}
                     <Link
                       href="/pricing"
-                      className={`block text-center w-full py-3 rounded-full font-semibold text-sm transition-all ${
+                      className={`block text-center w-full py-3 rounded-lg font-semibold text-sm transition-all ${
                         product.featured
                           ? "bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4] text-white shadow-md hover:shadow-lg"
                           : "border-2 border-[#0ea5e9] text-[#0ea5e9] hover:bg-[#0ea5e9] hover:text-white"
@@ -294,33 +319,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-      )}
-
-      {/* ── CTA Section ──────────────────────── */}
-      {settings?.showCtaSection !== false && (
-      <section className="cta-section">
-        <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-5" style={{ fontFamily: "'Orbitron', sans-serif" }}>
-            {settings?.ctaTitle || "Ready to Power Your Chat Server?"}
-          </h2>
-          <p className="text-lg opacity-90 max-w-xl mx-auto mb-10">
-            {settings?.ctaSubtitle || "Keep your server running at peak performance. Flexible durations, multiple payment methods."}
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/pricing" className="inline-flex items-center gap-2 bg-white text-[#0ea5e9] font-semibold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
-              {settings?.ctaButtonText || "View Pricing"} <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
-              href="https://t.me/chatserver"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border-2 border-white/80 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-white/10 transition-all"
-            >
-              Contact on Telegram
-            </a>
-          </div>
-        </div>
-      </section>
       )}
     </div>
   );

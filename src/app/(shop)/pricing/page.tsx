@@ -255,17 +255,17 @@ export default function PricingPage() {
           <div className="inline-flex items-center gap-2 rounded-full bg-[#6366f1]/10 border border-[#6366f1]/15 px-4 py-1.5 mb-5">
             <span className="h-2 w-2 rounded-full bg-[#10b981] pulse-dot" />
             <span className="text-xs font-semibold text-[#6366f1] tracking-wide uppercase">
-              License Renewal
+              Chat Server Plans
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0f172a]" style={{ fontFamily: "'Orbitron', sans-serif" }}>
-            {(settings?.pricingPageTitle || "Choose Your License Plan").split(" ").slice(0, -2).join(" ")}{" "}
+            {(settings?.pricingPageTitle || "Choose Your Plan").split(" ").slice(0, -2).join(" ")}{" "}
             <span className="hero-title-gradient">
-              {(settings?.pricingPageTitle || "Choose Your License Plan").split(" ").slice(-2).join(" ")}
+              {(settings?.pricingPageTitle || "Choose Your Plan").split(" ").slice(-2).join(" ")}
             </span>
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-[#64748b] leading-relaxed">
-            {settings?.pricingPageSubtitle || "Renew your ChatServer platform engine license. Choose the plan that fits your needs."}
+            {settings?.pricingPageSubtitle || "Select the chat server plan that fits your needs. All plans include full platform access."}
           </p>
         </div>
       </section>
@@ -304,7 +304,7 @@ export default function PricingPage() {
 
           <div className="mt-10 text-center space-y-1.5">
             <p className="text-sm text-[#64748b]">
-              All licenses include full platform access, SSL encryption, and 30-day money-back guarantee.
+              All plans include full platform access, SSL encryption, and 30-day money-back guarantee.
             </p>
             <p className="text-sm text-[#64748b]">
               Need a custom arrangement?{" "}

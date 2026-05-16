@@ -355,7 +355,7 @@ export default function AdminSeoPage() {
                     setSeo({ ...seo, metaDescription: e.target.value })
                   }
                   rows={3}
-                  placeholder="Renew your ChatServer IPTV platform engine license..."
+                  placeholder="Professional chat hosting with custom bots and real-time messaging..."
                   className="input-field resize-y"
                 />
                 <p className="text-xs text-[#94a3b8] mt-1">
@@ -372,7 +372,7 @@ export default function AdminSeoPage() {
                   onChange={(e) =>
                     setSeo({ ...seo, metaKeywords: e.target.value })
                   }
-                  placeholder="IPTV, streaming, platform engine, license, ChatServer"
+                  placeholder="chat server, hosting, real-time messaging, bots, ChatServer"
                   className="input-field"
                 />
                 <p className="text-xs text-[#94a3b8] mt-1">
@@ -401,7 +401,7 @@ export default function AdminSeoPage() {
                   onChange={(e) =>
                     setSeo({ ...seo, ogTitle: e.target.value })
                   }
-                  placeholder="ChatServer - IPTV Platform Engine"
+                  placeholder="ChatServer.tr - Professional Chat Hosting"
                   className="input-field"
                 />
                 <p className="text-xs text-[#94a3b8] mt-1">
@@ -418,7 +418,7 @@ export default function AdminSeoPage() {
                     setSeo({ ...seo, ogDescription: e.target.value })
                   }
                   rows={2}
-                  placeholder="Renew your ChatServer IPTV platform engine license..."
+                  placeholder="Professional chat hosting with custom bots and real-time messaging..."
                   className="input-field resize-y"
                 />
                 <p className="text-xs text-[#94a3b8] mt-1">
@@ -495,7 +495,7 @@ export default function AdminSeoPage() {
                   onChange={(e) =>
                     setSeo({ ...seo, twitterTitle: e.target.value })
                   }
-                  placeholder="ChatServer - IPTV Platform Engine"
+                  placeholder="ChatServer.tr - Professional Chat Hosting"
                   className="input-field"
                 />
                 <p className="text-xs text-[#94a3b8] mt-1">
@@ -512,7 +512,7 @@ export default function AdminSeoPage() {
                     setSeo({ ...seo, twitterDescription: e.target.value })
                   }
                   rows={2}
-                  placeholder="Renew your ChatServer IPTV platform engine license..."
+                  placeholder="Professional chat hosting with custom bots and real-time messaging..."
                   className="input-field resize-y"
                 />
                 <p className="text-xs text-[#94a3b8] mt-1">
