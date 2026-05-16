@@ -39,6 +39,9 @@ interface Product {
 interface SliderImg {
   id: number;
   title: string;
+  badge: string;
+  caption: string;
+  tags: string;
   imageUrl: string;
   linkUrl: string;
 }
@@ -151,26 +154,41 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-                <div className="relative z-20 h-full flex items-center">
+                <div className="relative z-20 h-full flex items-end pb-20 sm:pb-24">
                   <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
                     <div className="max-w-2xl">
+                      {img.badge && (
+                        <span className="inline-block px-3.5 py-1 mb-4 rounded-md bg-[#0ea5e9] text-white text-xs font-bold uppercase tracking-wider">
+                          {img.badge}
+                        </span>
+                      )}
                       {img.title && (
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight drop-shadow-2xl">
                           {img.title}
                         </h2>
                       )}
-                      {img.linkUrl && (
-                        <div className="mt-8 flex flex-wrap gap-4">
+                      {img.caption && (
+                        <p className="mt-4 text-base sm:text-lg text-white/90 leading-relaxed max-w-xl drop-shadow-lg">
+                          {img.caption}
+                        </p>
+                      )}
+                      <div className="mt-6 flex flex-wrap items-center gap-3">
+                        {img.tags && img.tags.split(",").map((tag) => tag.trim()).filter(Boolean).map((tag) => (
+                          <span key={tag} className="px-3.5 py-1.5 rounded-md border border-white/30 bg-white/10 backdrop-blur-sm text-white text-xs font-semibold tracking-wider">
+                            {tag}
+                          </span>
+                        ))}
+                        {img.linkUrl && (
                           <a
                             href={img.linkUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#0ea5e9] text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:bg-[#38bdf8] transition-all hover:-translate-y-0.5 shadow-lg shadow-[#0ea5e9]/25"
+                            className="inline-flex items-center gap-2 px-5 py-1.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-xs font-bold rounded-md uppercase tracking-wider hover:shadow-lg transition-all hover:-translate-y-0.5"
                           >
-                            View Details <ArrowRight className="h-4 w-4" />
+                            View Details <ArrowRight className="h-3.5 w-3.5" />
                           </a>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

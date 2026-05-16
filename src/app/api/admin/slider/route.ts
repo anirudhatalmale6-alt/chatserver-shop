@@ -18,6 +18,9 @@ export async function POST(req: NextRequest) {
   const image = await prisma.sliderImage.create({
     data: {
       title: body.title || "",
+      badge: body.badge || "",
+      caption: body.caption || "",
+      tags: body.tags || "",
       imageUrl: body.imageUrl,
       linkUrl: body.linkUrl || "",
       active: body.active ?? true,
@@ -38,6 +41,9 @@ export async function PUT(req: NextRequest) {
     where: { id: body.id },
     data: {
       title: body.title,
+      badge: body.badge,
+      caption: body.caption,
+      tags: body.tags,
       imageUrl: body.imageUrl,
       linkUrl: body.linkUrl,
       active: body.active,

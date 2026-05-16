@@ -7,6 +7,9 @@ import { Plus, Trash2, Save, Image as ImageIcon, GripVertical, ExternalLink, Upl
 interface SliderImage {
   id: number;
   title: string;
+  badge: string;
+  caption: string;
+  tags: string;
   imageUrl: string;
   linkUrl: string;
   active: boolean;
@@ -130,7 +133,7 @@ export default function SliderAdmin() {
           fetch("/api/admin/slider", {
             method: "PUT",
             headers: { Authorization: `Bearer ${token()}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ id: img.id, sortOrder: img.sortOrder, title: img.title, imageUrl: img.imageUrl, linkUrl: img.linkUrl, active: img.active }),
+            body: JSON.stringify({ id: img.id, sortOrder: img.sortOrder, title: img.title, badge: img.badge, caption: img.caption, tags: img.tags, imageUrl: img.imageUrl, linkUrl: img.linkUrl, active: img.active }),
           })
         )
       );
@@ -322,19 +325,29 @@ export default function SliderAdmin() {
 
                 {/* Fields */}
                 <div className="flex-1 space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-[#374151] mb-1">Caption</label>
+                      <label className="block text-xs font-semibold text-[#374151] mb-1">Badge</label>
+                      <input
+                        type="text"
+                        value={img.badge}
+                        onChange={(e) => updateField(img.id, "badge", e.target.value)}
+                        className="input-field text-sm"
+                        placeholder="e.g. Popular, New, Premium"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#374151] mb-1">Title</label>
                       <input
                         type="text"
                         value={img.title}
                         onChange={(e) => updateField(img.id, "title", e.target.value)}
                         className="input-field text-sm"
-                        placeholder="Caption shown on slider overlay"
+                        placeholder="Main heading text"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-[#6b7280] mb-1">Link URL (optional)</label>
+                      <label className="block text-xs font-medium text-[#6b7280] mb-1">Link URL</label>
                       <div className="relative">
                         <ExternalLink className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#9ca3af]" />
                         <input
@@ -345,6 +358,28 @@ export default function SliderAdmin() {
                           placeholder="https://..."
                         />
                       </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-[#374151] mb-1">Caption</label>
+                      <input
+                        type="text"
+                        value={img.caption}
+                        onChange={(e) => updateField(img.id, "caption", e.target.value)}
+                        className="input-field text-sm"
+                        placeholder="Description text below title"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#374151] mb-1">Tags (comma-separated)</label>
+                      <input
+                        type="text"
+                        value={img.tags}
+                        onChange={(e) => updateField(img.id, "tags", e.target.value)}
+                        className="input-field text-sm"
+                        placeholder="e.g. Survival, Hardcore, PvPvE"
+                      />
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
