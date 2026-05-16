@@ -1,0 +1,436 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Product  (multi-product shop)
+// ---------------------------------------------------------------------------
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(255)
+  description String   @db.Text
+  features    Json     @default("[]")
+  badge       String   @default("") @db.VarChar(80)
+  badgeColor  String   @default("purple") @map("badge_color") @db.VarChar(30)
+  featured    Boolean  @default(false)
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  tiers   PricingTier[]
+  options ProductOption[]
+
+  @@index([active, sortOrder])
+  @@map("products")
+}
+
+// ---------------------------------------------------------------------------
+// ProductOption  (configurable dropdowns per product)
+// ---------------------------------------------------------------------------
+model ProductOption {
+  id        Int     @id @default(autoincrement())
+  productId Int     @map("product_id")
+  name      String  @db.VarChar(120)
+  choices   Json    @default("[]")
+  required  Boolean @default(true)
+  sortOrder Int     @default(0) @map("sort_order")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("product_options")
+}
+
+// ---------------------------------------------------------------------------
+// PricingTier  (duration-based pricing per product)
+// ---------------------------------------------------------------------------
+enum BillingPeriod {
+  monthly
+  quarterly
+  semiannual
+  yearly
+  lifetime
+}
+
+model PricingTier {
+  id        Int           @id @default(autoincrement())
+  productId Int           @map("product_id")
+  name      String        @db.VarChar(120)
+  price     Decimal       @db.Decimal(10, 2)
+  period    BillingPeriod
+  features  Json          @default("[]")
+  sortOrder Int           @default(0) @map("sort_order")
+  active    Boolean       @default(true)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([active, sortOrder])
+  @@map("pricing_tiers")
+}
+
+// ---------------------------------------------------------------------------
+// Order
+// ---------------------------------------------------------------------------
+enum PaymentMethod {
+  stripe
+  multisafepay
+  crypto
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+enum CryptoCurrency {
+  btc
+  usdt
+  usdc
+  eth
+}
+
+model Order {
+  id              Int              @id @default(autoincrement())
+  orderId         String           @unique @map("order_id") @db.VarChar(11)
+  customerEmail   String           @map("customer_email") @db.VarChar(255)
+  customerName    String           @map("customer_name") @db.VarChar(255)
+  tierName        String           @map("tier_name") @db.VarChar(120)
+  tierPrice       Decimal          @map("tier_price") @db.Decimal(10, 2)
+  optionsPrice    Decimal          @default(0) @map("options_price") @db.Decimal(10, 2)
+  oneTimeFees     Decimal          @default(0) @map("one_time_fees") @db.Decimal(10, 2)
+  totalPrice      Decimal          @default(0) @map("total_price") @db.Decimal(10, 2)
+  paymentMethod   PaymentMethod    @map("payment_method")
+  paymentStatus   PaymentStatus    @default(pending) @map("payment_status")
+  paymentId       String?          @map("payment_id") @db.VarChar(255)
+  cryptoCurrency  CryptoCurrency?  @map("crypto_currency")
+  cryptoTxHash    String?          @map("crypto_tx_hash") @db.VarChar(255)
+  notes           String?          @db.Text
+  selectedOptions Json?            @map("selected_options")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  confirmedAt     DateTime?        @map("confirmed_at")
+
+  @@index([customerEmail])
+  @@index([paymentStatus])
+  @@index([paymentMethod])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+// ---------------------------------------------------------------------------
+// AdminUser
+// ---------------------------------------------------------------------------
+enum AdminRole {
+  moderator
+  admin
+  super
+}
+
+model AdminUser {
+  id           Int       @id @default(autoincrement())
+  nickname     String    @unique @db.VarChar(80)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  role         AdminRole @default(admin)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}
+
+// ---------------------------------------------------------------------------
+// SiteSettings  (singleton -- always id = 1)
+// ---------------------------------------------------------------------------
+model SiteSettings {
+  id                   Int     @id @default(1)
+  siteName             String  @default("ChatServer.tr") @map("site_name") @db.VarChar(255)
+  siteDescription      String  @default("") @map("site_description") @db.Text
+  contactEmail         String  @default("") @map("contact_email") @db.VarChar(255)
+  telegramUrl          String  @default("") @map("telegram_url") @db.VarChar(500)
+
+  // Stripe
+  stripeEnabled        Boolean @default(false) @map("stripe_enabled")
+  stripePublicKey      String  @default("") @map("stripe_public_key") @db.VarChar(500)
+  stripeSecretKey      String  @default("") @map("stripe_secret_key") @db.VarChar(500)
+
+  // MultiSafepay
+  multisafepayEnabled  Boolean @default(false) @map("multisafepay_enabled")
+  multisafepayApiKey   String  @default("") @map("multisafepay_api_key") @db.VarChar(500)
+
+  // Crypto wallets
+  cryptoEnabled        Boolean @default(false) @map("crypto_enabled")
+  btcAddress           String  @default("") @map("btc_address") @db.VarChar(255)
+  usdtAddress          String  @default("") @map("usdt_address") @db.VarChar(255)
+  usdcAddress          String  @default("") @map("usdc_address") @db.VarChar(255)
+  ethAddress           String  @default("") @map("eth_address") @db.VarChar(255)
+
+  // SMTP
+  smtpHost             String  @default("") @map("smtp_host") @db.VarChar(255)
+  smtpPort             Int     @default(587) @map("smtp_port")
+  smtpUser             String  @default("") @map("smtp_user") @db.VarChar(255)
+  smtpPass             String  @default("") @map("smtp_pass") @db.VarChar(255)
+  smtpFrom             String  @default("") @map("smtp_from") @db.VarChar(255)
+  smtpFromName         String  @default("") @map("smtp_from_name") @db.VarChar(255)
+
+  // Email templates
+  confirmEmailSubject  String  @default("Order Confirmation") @map("confirm_email_subject") @db.VarChar(500)
+  confirmEmailBody     String  @default("") @map("confirm_email_body") @db.Text
+
+  // Tax
+  vatRate              Decimal @default(0) @map("vat_rate") @db.Decimal(5, 2)
+
+  // SEO - General
+  metaTitle            String  @default("") @map("meta_title") @db.VarChar(255)
+  metaDescription      String  @default("") @map("meta_description") @db.Text
+  metaKeywords         String  @default("") @map("meta_keywords") @db.Text
+  faviconUrl           String  @default("") @map("favicon_url") @db.VarChar(500)
+
+  // SEO - Open Graph (Facebook)
+  ogTitle              String  @default("") @map("og_title") @db.VarChar(255)
+  ogDescription        String  @default("") @map("og_description") @db.Text
+  ogImageUrl           String  @default("") @map("og_image_url") @db.VarChar(500)
+
+  // SEO - Twitter Card
+  twitterTitle         String  @default("") @map("twitter_title") @db.VarChar(255)
+  twitterDescription   String  @default("") @map("twitter_description") @db.Text
+  twitterImageUrl      String  @default("") @map("twitter_image_url") @db.VarChar(500)
+
+  // Cookie Bar
+  cookieBarEnabled     Boolean @default(true) @map("cookie_bar_enabled")
+  cookieBarText        String  @default("We use cookies to improve your experience. By continuing to browse, you agree to our cookie policy.") @map("cookie_bar_text") @db.Text
+  cookieBarButtonText  String  @default("Accept") @map("cookie_bar_button_text") @db.VarChar(50)
+
+  // Homepage Content
+  heroTitle            String  @default("Professional Chat Hosting Platform") @map("hero_title") @db.VarChar(500)
+  heroSubtitle         String  @default("Deploy fully managed chat servers with bots, customization, and 24/7 uptime") @map("hero_subtitle") @db.Text
+  heroButtonText       String  @default("View Plans") @map("hero_button_text") @db.VarChar(100)
+  showProductsOnHome   Boolean @default(true) @map("show_products_on_home")
+
+  // Section Visibility
+  showFeaturesSection  Boolean @default(true) @map("show_features_section")
+  showProtocolsSection Boolean @default(true) @map("show_protocols_section")
+  showCtaSection       Boolean @default(true) @map("show_cta_section")
+
+  // Editable Section Text
+  featuresSectionTitle String  @default("Why Choose ChatServer") @map("features_section_title") @db.VarChar(255)
+  protocolsSectionTitle String @default("Complete Protocol Coverage") @map("protocols_section_title") @db.VarChar(255)
+  protocolsSectionSubtitle String @default("From ingest to delivery — every protocol and workflow fully supported.") @map("protocols_section_subtitle") @db.Text
+  ctaTitle             String  @default("Ready to Launch Your Chat Server?") @map("cta_title") @db.VarChar(500)
+  ctaSubtitle          String  @default("Get started in minutes. Choose your plan, customize your options, and we'll handle the rest.") @map("cta_subtitle") @db.Text
+  ctaButtonText        String  @default("View Pricing") @map("cta_button_text") @db.VarChar(100)
+  pricingPageTitle     String  @default("Choose Your Chat Plan") @map("pricing_page_title") @db.VarChar(500)
+  pricingPageSubtitle  String  @default("From small communities to enterprise deployments. Pick the plan that fits your needs.") @map("pricing_page_subtitle") @db.Text
+  contactPageTitle     String  @default("Contact Us") @map("contact_page_title") @db.VarChar(255)
+  contactPageSubtitle  String  @default("Have a question or need help? Select a department and send us a message.") @map("contact_page_subtitle") @db.Text
+
+  // Pricing Visibility
+  hidePricingForGuests Boolean @default(false) @map("hide_pricing_for_guests")
+
+  // Email Templates
+  orderReceivedEmailSubject  String  @default("New Order Received") @map("order_received_email_subject") @db.VarChar(500)
+  orderReceivedEmailBody     String  @default("") @map("order_received_email_body") @db.Text
+  orderConfirmedEmailSubject String  @default("Your Order Has Been Confirmed") @map("order_confirmed_email_subject") @db.VarChar(500)
+  orderConfirmedEmailBody    String  @default("") @map("order_confirmed_email_body") @db.Text
+
+  // Analytics
+  gtagId               String  @default("") @map("gtag_id") @db.VarChar(50)
+
+  // Social Links
+  socialLinks          Json    @default("[]") @map("social_links")
+
+  @@map("site_settings")
+}
+
+// ---------------------------------------------------------------------------
+// CmsPage  (custom pages)
+// ---------------------------------------------------------------------------
+model CmsPage {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  slug      String   @unique @db.VarChar(255)
+  content   String   @db.Text
+  active    Boolean  @default(true)
+  showInNav Boolean  @default(false) @map("show_in_nav")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@index([active])
+  @@map("cms_pages")
+}
+
+// ---------------------------------------------------------------------------
+// SliderImage  (homepage rotating image slider)
+// ---------------------------------------------------------------------------
+model SliderImage {
+  id        Int      @id @default(autoincrement())
+  title     String   @default("") @db.VarChar(255)
+  imageUrl  String   @map("image_url") @db.VarChar(500)
+  linkUrl   String   @default("") @map("link_url") @db.VarChar(500)
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([active, sortOrder])
+  @@map("slider_images")
+}
+
+// ---------------------------------------------------------------------------
+// Customer  (client area users)
+// ---------------------------------------------------------------------------
+model Customer {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique @db.VarChar(255)
+  name         String    @db.VarChar(255)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  active       Boolean   @default(true)
+  banned       Boolean   @default(false)
+  banReason    String?   @map("ban_reason") @db.Text
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  lastLogin    DateTime? @map("last_login")
+
+  loginLogs    CustomerLoginLog[]
+  invoices     Invoice[]
+
+  @@index([email])
+  @@map("customers")
+}
+
+model CustomerLoginLog {
+  id         Int      @id @default(autoincrement())
+  customerId Int      @map("customer_id")
+  ip         String   @db.VarChar(100)
+  userAgent  String   @default("") @map("user_agent") @db.VarChar(500)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([createdAt])
+  @@map("customer_login_logs")
+}
+
+// ---------------------------------------------------------------------------
+// API Key (for CMS API)
+// ---------------------------------------------------------------------------
+model ApiKey {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  keyPrefix   String    @map("key_prefix") @db.VarChar(10)
+  keyHash     String    @unique @map("key_hash") @db.VarChar(128)
+  secretHash  String    @map("secret_hash") @db.VarChar(128)
+  permissions Json      @default("[]")
+  active      Boolean   @default(true)
+  rateLimit   Int       @default(60) @map("rate_limit")
+  lastUsedAt  DateTime? @map("last_used_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([active])
+  @@map("api_keys")
+}
+
+// ---------------------------------------------------------------------------
+// ChatInstance  (managed chat server instances)
+// ---------------------------------------------------------------------------
+enum ChatStatus {
+  active
+  suspended
+  expired
+  pending
+}
+
+model ChatInstance {
+  id                 Int        @id @default(autoincrement())
+  instanceId         String     @unique @map("instance_id") @db.VarChar(36)
+  name               String     @db.VarChar(255)
+  displayName        String     @map("display_name") @db.VarChar(255)
+  domain             String     @db.VarChar(255)
+  port               Int
+  status             ChatStatus @default(pending)
+  ownerUsername      String     @map("owner_username") @db.VarChar(100)
+  ownerEmail         String     @map("owner_email") @db.VarChar(255)
+  cmsSlug            String?    @map("cms_slug") @db.VarChar(50)
+  selectedOptions    Json       @default("{}") @map("selected_options")
+  maxChatters        Int        @default(50) @map("max_chatters")
+  hasRedundancy      Boolean    @default(false) @map("has_redundancy")
+  subscriptionTier   String?    @map("subscription_tier") @db.VarChar(120)
+  licenseExpiresAt   DateTime?  @map("license_expires_at")
+  reminderSchedule   Json       @default("[7, 3, 1]") @map("reminder_schedule")
+  lastReminderSentAt DateTime?  @map("last_reminder_sent_at")
+  createdAt          DateTime   @default(now()) @map("created_at")
+  updatedAt          DateTime   @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([licenseExpiresAt])
+  @@index([domain])
+  @@index([ownerEmail])
+  @@map("chat_instances")
+}
+
+// ---------------------------------------------------------------------------
+// Invoice
+// ---------------------------------------------------------------------------
+enum InvoiceStatus {
+  draft
+  sent
+  paid
+  cancelled
+}
+
+model Invoice {
+  id            Int           @id @default(autoincrement())
+  invoiceId     String        @unique @map("invoice_id") @db.VarChar(20)
+  customerId    Int?          @map("customer_id")
+  customerEmail String        @map("customer_email") @db.VarChar(255)
+  customerName  String        @map("customer_name") @db.VarChar(255)
+  items         Json          @default("[]")
+  subtotal      Decimal       @db.Decimal(10, 2)
+  vatRate       Decimal       @default(0) @db.Decimal(5, 2) @map("vat_rate")
+  vatAmount     Decimal       @default(0) @db.Decimal(10, 2) @map("vat_amount")
+  total         Decimal       @db.Decimal(10, 2)
+  status        InvoiceStatus @default(draft)
+  notes         String?       @db.Text
+  paidAt        DateTime?     @map("paid_at")
+  dueDate       DateTime?     @map("due_date")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("invoices")
+}
+
+// ---------------------------------------------------------------------------
+// ContactMessage
+// ---------------------------------------------------------------------------
+model ContactMessage {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(255)
+  email      String   @db.VarChar(255)
+  department String   @db.VarChar(100)
+  subject    String   @db.VarChar(500)
+  message    String   @db.Text
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([read])
+  @@index([department])
+  @@index([createdAt])
+  @@map("contact_messages")
+}

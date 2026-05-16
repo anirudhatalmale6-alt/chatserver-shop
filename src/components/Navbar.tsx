@@ -1,0 +1,210 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Menu, X, Send, Mail, Globe, Play, MessageCircle, User, LogIn, MessageSquare, type LucideIcon } from "lucide-react";
+
+interface NavPage {
+  title: string;
+  slug: string;
+}
+
+interface SocialLink {
+  platform: string;
+  url: string;
+  enabled: boolean;
+}
+
+const PLATFORM_ICONS: Record<string, LucideIcon> = {
+  telegram: Send,
+  email: Mail,
+  twitter: Globe,
+  facebook: Globe,
+  instagram: Globe,
+  youtube: Play,
+  discord: MessageCircle,
+  whatsapp: MessageCircle,
+};
+
+const staticLinks = [
+  { label: "Features", href: "/#features" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Contact", href: "/contact" },
+  { label: "Order Lookup", href: "/order-lookup" },
+];
+
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [cmsPages, setCmsPages] = useState<NavPage[]>([]);
+  const [navSocialLink, setNavSocialLink] = useState<SocialLink | null>(null);
+  const [customerName, setCustomerName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const check = () => setCustomerName(localStorage.getItem("customer_name"));
+    check();
+    window.addEventListener("customer-auth-change", check);
+    window.addEventListener("storage", check);
+    return () => {
+      window.removeEventListener("customer-auth-change", check);
+      window.removeEventListener("storage", check);
+    };
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/pages/nav")
+      .then((res) => res.json())
+      .then((data) => setCmsPages(data || []))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.socialLinks)) {
+          const enabled = data.socialLinks.filter((sl: SocialLink) => sl.enabled && sl.url);
+          // Prefer telegram, then fall back to first enabled link
+          const telegram = enabled.find((sl: SocialLink) => sl.platform === "telegram");
+          setNavSocialLink(telegram || enabled[0] || null);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const allLinks = [
+    ...staticLinks,
+    ...cmsPages.map((p) => ({ label: p.title, href: `/page/${p.slug}` })),
+  ];
+
+  const SocialIcon = navSocialLink ? (PLATFORM_ICONS[navSocialLink.platform] || Send) : Send;
+
+  return (
+    <header className={`fixed top-0 left-0 right-0 z-50 navbar-glass ${scrolled ? "scrolled" : ""}`}>
+      <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 group" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-[#0ea5e9] to-[#10b981] text-white">
+              <MessageSquare className="h-4 w-4" />
+            </span>
+            <span className="text-xl font-bold bg-gradient-to-r from-[#0ea5e9] to-[#10b981] bg-clip-text text-transparent">
+              ChatServer.tr
+            </span>
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-6">
+            {allLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="relative text-sm font-medium text-[#111827] hover:text-[#0ea5e9] transition-colors py-1 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-[#0ea5e9] after:transition-all after:-translate-x-1/2 hover:after:w-[70%]"
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            {navSocialLink && (
+              <a
+                href={navSocialLink.url}
+                {...(!navSocialLink.url.startsWith("mailto:") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="text-[#6b7280] hover:text-[#0ea5e9] transition-colors"
+                aria-label={navSocialLink.platform}
+              >
+                <SocialIcon className="h-4 w-4" />
+              </a>
+            )}
+
+            {customerName ? (
+              <Link href="/account" className="flex items-center gap-1.5 text-sm font-medium text-[#0ea5e9] hover:text-[#0284c7] transition-colors">
+                <User className="h-4 w-4" />
+                {customerName.split(" ")[0]}
+              </Link>
+            ) : (
+              <Link href="/login" className="flex items-center gap-1.5 text-sm font-medium text-[#6b7280] hover:text-[#0ea5e9] transition-colors">
+                <LogIn className="h-4 w-4" />
+                Sign In
+              </Link>
+            )}
+
+            {customerName ? (
+              <Link href="/account" className="btn-primary text-sm !py-2.5 !px-6">
+                Dashboard
+              </Link>
+            ) : (
+              <Link href="/pricing" className="btn-primary text-sm !py-2.5 !px-6">
+                Get Started
+              </Link>
+            )}
+          </nav>
+
+          <button
+            className="md:hidden text-[#6b7280] hover:text-[#111827] transition-colors"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <div className="md:hidden bg-white border-t border-[#e5e7eb]">
+          <div className="px-5 py-4 space-y-3">
+            {allLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="block text-sm text-[#111827] font-medium hover:text-[#0ea5e9] py-2"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {customerName ? (
+              <Link
+                href="/account"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2 text-sm text-[#0ea5e9] font-medium py-2"
+              >
+                <User className="h-4 w-4" />
+                My Account
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2 text-sm text-[#6b7280] font-medium py-2"
+              >
+                <LogIn className="h-4 w-4" />
+                Sign In
+              </Link>
+            )}
+            {customerName ? (
+              <Link
+                href="/account"
+                onClick={() => setMobileOpen(false)}
+                className="btn-primary inline-block text-sm !px-6 !py-2.5 mt-2"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/pricing"
+                onClick={() => setMobileOpen(false)}
+                className="btn-primary inline-block text-sm !px-6 !py-2.5 mt-2"
+              >
+                Get Started
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
