@@ -136,123 +136,117 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* ── Full-Screen Hero Slider ──────────────── */}
-      <section className="relative h-[420px] sm:h-[480px] lg:h-[520px] overflow-hidden bg-white mt-[88px]">
-        {sliderImages.length > 0 ? (
-          <>
-            {sliderImages.map((img, idx) => (
-              <div
-                key={img.id}
-                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                  idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
-                }`}
-              >
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${img.imageUrl})` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+      {/* ── Hero: Text Left + Slider Right ─────── */}
+      <section className="mt-[88px] relative overflow-hidden bg-gradient-to-br from-[#ecfdf5] via-[#f0f9ff] to-[#ecfeff]">
+        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "radial-gradient(circle at 20% 30%, #0ea5e9 0%, transparent 50%), radial-gradient(circle at 80% 70%, #10b981 0%, transparent 50%)" }} />
+        <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 py-14 sm:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
-                <div className="relative z-20 h-full flex items-end pb-10 sm:pb-14">
-                  <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
-                    <div className="max-w-xl">
-                      {img.badge && (
-                        <span className="inline-block px-3 py-0.5 mb-3 rounded bg-[#0ea5e9] text-white text-[10px] font-bold uppercase tracking-wider">
-                          {img.badge}
-                        </span>
-                      )}
-                      {img.title && (
-                        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-[1.15] tracking-tight drop-shadow-2xl">
-                          {img.title}
-                        </h2>
-                      )}
-                      {img.caption && (
-                        <p className="mt-2 text-sm text-white/85 leading-relaxed max-w-md drop-shadow-lg line-clamp-2">
-                          {img.caption}
-                        </p>
-                      )}
-                      <div className="mt-4 flex flex-wrap items-center gap-2">
-                        {img.tags && img.tags.split(",").map((tag) => tag.trim()).filter(Boolean).map((tag) => (
-                          <span key={tag} className="px-3 py-1 rounded border border-white/30 bg-white/10 backdrop-blur-sm text-white text-[10px] font-semibold tracking-wider">
-                            {tag}
-                          </span>
-                        ))}
-                        {img.linkUrl && (
-                          <a
-                            href={img.linkUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-4 py-1 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-[10px] font-bold rounded uppercase tracking-wider hover:shadow-lg transition-all hover:-translate-y-0.5"
-                          >
-                            View Details <ArrowRight className="h-3 w-3" />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {sliderImages.length > 1 && (
-              <>
-                <button
-                  onClick={prevSlide}
-                  className="absolute left-5 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all border border-white/10 text-white/70 hover:text-white"
-                >
-                  <ChevronLeft className="h-6 w-6" />
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all border border-white/10 text-white/70 hover:text-white"
-                >
-                  <ChevronRight className="h-6 w-6" />
-                </button>
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2.5">
-                  {sliderImages.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentSlide(idx)}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        idx === currentSlide ? "bg-[#0ea5e9] w-8" : "bg-white/40 w-4 hover:bg-white/60"
-                      }`}
-                    />
+            {/* Left: Text */}
+            <div>
+              {sliderImages.length > 0 && sliderImages[currentSlide]?.badge && (
+                <span className="inline-block px-3 py-0.5 mb-4 rounded bg-[#0ea5e9] text-white text-[10px] font-bold uppercase tracking-wider">
+                  {sliderImages[currentSlide].badge}
+                </span>
+              )}
+              <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-black text-gray-800 leading-[1.15] tracking-tight">
+                {(sliderImages.length > 0 && sliderImages[currentSlide]?.title) || settings?.heroTitle || "Professional Chat Hosting Platform"}
+              </h1>
+              <p className="mt-4 text-sm sm:text-base text-gray-500 leading-relaxed max-w-md">
+                {(sliderImages.length > 0 && sliderImages[currentSlide]?.caption) || settings?.heroSubtitle || "Deploy fully managed chat servers with custom bots, real-time messaging, and enterprise-grade security."}
+              </p>
+              {sliderImages.length > 0 && sliderImages[currentSlide]?.tags && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {sliderImages[currentSlide].tags.split(",").map((tag) => tag.trim()).filter(Boolean).map((tag) => (
+                    <span key={tag} className="px-3 py-1 rounded-md border border-[#0ea5e9]/20 bg-[#0ea5e9]/5 text-[#0ea5e9] text-[10px] font-bold uppercase tracking-wider">
+                      {tag}
+                    </span>
                   ))}
                 </div>
-              </>
-            )}
-          </>
-        ) : (
-          /* Fallback hero when no slider images */
-          <div className="relative h-full flex items-center bg-gradient-to-br from-[#ecfdf5] via-[#f0f9ff] to-[#ecfeff]">
-            <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 25% 25%, #0ea5e9 0%, transparent 50%), radial-gradient(circle at 75% 75%, #10b981 0%, transparent 50%)" }} />
-            <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
-              <div className="max-w-xl">
-                <h1 className="text-3xl sm:text-4xl font-black text-gray-800 leading-[1.15] tracking-tight">
-                  {settings?.heroTitle || "Professional Chat Hosting Platform"}
-                </h1>
-                <p className="mt-4 text-sm text-gray-500 leading-relaxed max-w-md">
-                  {settings?.heroSubtitle || "Deploy fully managed chat servers with custom bots, real-time messaging, and enterprise-grade security."}
-                </p>
-                <div className="mt-6 flex flex-wrap gap-3">
+              )}
+              <div className="mt-6 flex flex-wrap gap-3">
+                {sliderImages.length > 0 && sliderImages[currentSlide]?.linkUrl ? (
+                  <a
+                    href={sliderImages[currentSlide].linkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-sm font-bold rounded-xl uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/25 transition-all hover:-translate-y-0.5"
+                  >
+                    View Details <ArrowRight className="h-4 w-4" />
+                  </a>
+                ) : (
                   <Link
                     href="/pricing"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-sm font-bold rounded-lg uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/25 transition-all hover:-translate-y-0.5"
+                    className="inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-sm font-bold rounded-xl uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/25 transition-all hover:-translate-y-0.5"
                   >
                     {settings?.heroButtonText || "View Plans"} <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <Link
-                    href="/#features"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-[#0ea5e9]/30 text-[#0ea5e9] text-sm font-bold rounded-lg uppercase tracking-wider hover:bg-[#0ea5e9]/5 transition-all"
-                  >
-                    Explore Features
-                  </Link>
-                </div>
+                )}
+                <Link
+                  href="/#features"
+                  className="inline-flex items-center gap-2 px-7 py-3 border-2 border-[#0ea5e9]/30 text-[#0ea5e9] text-sm font-bold rounded-xl uppercase tracking-wider hover:bg-[#0ea5e9]/5 transition-all"
+                >
+                  Explore Features
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: Image Slider in Frame */}
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden border-2 border-gray-200/60 shadow-2xl shadow-[#0ea5e9]/10 bg-white aspect-[16/10]">
+                {sliderImages.length > 0 ? (
+                  <>
+                    {sliderImages.map((img, idx) => (
+                      <div
+                        key={img.id}
+                        className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                          idx === currentSlide ? "opacity-100" : "opacity-0"
+                        }`}
+                      >
+                        <img
+                          src={img.imageUrl}
+                          alt={img.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))}
+                    {sliderImages.length > 1 && (
+                      <>
+                        <button
+                          onClick={prevSlide}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-all shadow-md text-gray-600 hover:text-gray-800"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={nextSlide}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-all shadow-md text-gray-600 hover:text-gray-800"
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                          {sliderImages.map((_, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setCurrentSlide(idx)}
+                              className={`h-1.5 rounded-full transition-all duration-300 ${
+                                idx === currentSlide ? "bg-[#0ea5e9] w-6" : "bg-white/60 w-3 hover:bg-white/80"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-300">
+                    <MessageSquare className="h-16 w-16" />
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        )}
+        </div>
       </section>
 
       {/* ── Features Section — Boxed Grid ─────── */}
