@@ -30,6 +30,7 @@ const staticLinks = [
   { label: "HOME", href: "/" },
   { label: "CHAT SERVERS", href: "/pricing" },
   { label: "FEATURES", href: "/#features" },
+  { label: "FAQ", href: "/faq" },
   { label: "CONTACT", href: "/contact" },
 ];
 

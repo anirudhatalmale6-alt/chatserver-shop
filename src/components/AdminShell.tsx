@@ -18,6 +18,7 @@ import {
   Server,
   Mail,
   ShieldCheck,
+  HelpCircle,
 } from "lucide-react";
 
 const allNavItems = [
@@ -28,6 +29,7 @@ const allNavItems = [
   { key: "messages", label: "Messages", href: "/admin/messages", icon: MessageSquare, moderator: false },
   { key: "pages", label: "Pages", href: "/admin/pages", icon: FileText, moderator: false },
   { key: "slider", label: "Slider", href: "/admin/slider", icon: Images, moderator: false },
+  { key: "faq", label: "FAQ", href: "/admin/faq", icon: HelpCircle, moderator: false },
   { key: "chat-instances", label: "Chat Instances", href: "/admin/chat-instances", icon: Server, moderator: true },
   { key: "payments", label: "Payments", href: "/admin/payments", icon: CreditCard, moderator: false },
   { key: "email-templates", label: "Email Templates", href: "/admin/email-templates", icon: Mail, moderator: false },

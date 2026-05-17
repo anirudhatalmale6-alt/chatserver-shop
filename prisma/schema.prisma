@@ -423,6 +423,21 @@ model Invoice {
 }
 
 // ---------------------------------------------------------------------------
+// FaqItem
+// ---------------------------------------------------------------------------
+model FaqItem {
+  id        Int      @id @default(autoincrement())
+  question  String   @db.VarChar(500)
+  answer    String   @db.Text
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([active, sortOrder])
+  @@map("faq_items")
+}
+
+// ---------------------------------------------------------------------------
 // ContactMessage
 // ---------------------------------------------------------------------------
 model ContactMessage {

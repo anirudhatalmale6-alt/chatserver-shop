@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Send, CheckCircle, Loader2, Mail, User,
-  MessageSquare, MapPin, Phone, Clock, ArrowRight,
+  MessageSquare, MapPin, Phone, Clock, ArrowRight, RefreshCw,
 } from "lucide-react";
 
 interface ContactSettings {
@@ -58,6 +58,21 @@ export default function ContactPage() {
   const [success, setSuccess] = useState(false);
   const [settings, setSettings] = useState<ContactSettings>({});
 
+  const [captchaCode, setCaptchaCode] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaInput, setCaptchaInput] = useState("");
+
+  const loadCaptcha = useCallback(() => {
+    fetch("/api/captcha")
+      .then((r) => r.json())
+      .then((d) => {
+        setCaptchaCode(d.code || "");
+        setCaptchaToken(d.token || "");
+        setCaptchaInput("");
+      })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     fetch("/api/contact")
       .then((res) => res.json())
@@ -70,7 +85,8 @@ export default function ContactPage() {
       .then((r) => r.json())
       .then((d) => setSettings(d))
       .catch(() => {});
-  }, []);
+    loadCaptcha();
+  }, [loadCaptcha]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,15 +95,32 @@ export default function ContactPage() {
       setError("Please fill in all fields.");
       return;
     }
+    if (captchaInput.toLowerCase() !== captchaCode.toLowerCase()) {
+      setError("Captcha verification failed. Please type the code exactly as shown.");
+      loadCaptcha();
+      return;
+    }
     setSubmitting(true);
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), department, subject: subject.trim(), message: message.trim() }),
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          department,
+          subject: subject.trim(),
+          message: message.trim(),
+          captchaInput: captchaInput.toLowerCase(),
+          captchaToken,
+        }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error || "Failed to send message."); return; }
+      if (!res.ok) {
+        setError(data.error || "Failed to send message.");
+        if (data.error?.includes("aptcha")) loadCaptcha();
+        return;
+      }
       setSuccess(true);
     } catch {
       setError("Network error. Please try again.");
@@ -121,7 +154,6 @@ export default function ContactPage() {
 
   return (
     <div>
-      {/* Header */}
       <section className="pt-28 pb-10 sm:pt-32 sm:pb-12 bg-gradient-to-br from-[#ecfdf5] via-[#f0f9ff] to-[#ecfeff]">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 text-center">
           <span className="text-sm font-bold tracking-[0.2em] uppercase text-[#10b981]">// Contact</span>
@@ -134,12 +166,10 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Content: Info Cards + Form */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
 
-            {/* Left Column — Info Cards */}
             <div className="lg:col-span-1 flex flex-col gap-5">
               {infoBadges.map((info) => (
                 <div
@@ -161,11 +191,9 @@ export default function ContactPage() {
               ))}
             </div>
 
-            {/* Right Column — Form */}
             <div className="lg:col-span-2">
               <div className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm">
 
-                {/* Department Selector — Button Style */}
                 {departments.length > 0 && (
                   <div className="mb-7">
                     <label className="block text-xs font-black uppercase tracking-wider text-gray-400 mb-3">
@@ -255,6 +283,39 @@ export default function ContactPage() {
                         rows={5}
                         placeholder="Describe your question or issue..."
                         className="w-full rounded-xl border border-gray-200 bg-gray-50/50 py-3 pl-11 pr-4 text-sm text-gray-800 placeholder:text-gray-300 focus:border-[#0ea5e9] focus:bg-white focus:ring-2 focus:ring-[#0ea5e9]/10 focus:outline-none transition-all resize-y"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Captcha */}
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-wider text-gray-400 mb-2">
+                      Security Verification
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 px-5 py-3 rounded-xl bg-gray-100 border border-gray-200 select-none">
+                        <span
+                          className="text-lg font-mono font-bold tracking-[0.3em] text-gray-700"
+                          style={{ letterSpacing: "0.25em", textShadow: "1px 1px 2px rgba(0,0,0,0.1)" }}
+                        >
+                          {captchaCode || "..."}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={loadCaptcha}
+                        className="p-2 rounded-lg text-gray-400 hover:text-[#0ea5e9] hover:bg-[#0ea5e9]/5 transition-colors"
+                        title="Refresh captcha"
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </button>
+                      <input
+                        type="text"
+                        value={captchaInput}
+                        onChange={(e) => setCaptchaInput(e.target.value)}
+                        placeholder="Type the code above"
+                        className="flex-1 rounded-xl border border-gray-200 bg-gray-50/50 py-3 px-4 text-sm text-gray-800 placeholder:text-gray-300 focus:border-[#0ea5e9] focus:bg-white focus:ring-2 focus:ring-[#0ea5e9]/10 focus:outline-none transition-all"
+                        autoComplete="off"
                       />
                     </div>
                   </div>

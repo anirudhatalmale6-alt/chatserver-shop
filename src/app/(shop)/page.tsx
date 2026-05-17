@@ -3,9 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  MessageSquare, ShieldCheck, Activity, CheckCircle2,
-  Server, Bot, ArrowRight, Users, Shield, Cpu, Zap,
-  ChevronLeft, ChevronRight, Wifi, Award, Globe, Headphones,
+  CheckCircle2, ArrowRight, ChevronLeft, ChevronRight,
+  Wifi, Award, Bot, Globe, Headphones, Shield,
   HardDrive, Smartphone, RefreshCw, Lock, type LucideIcon,
 } from "lucide-react";
 
@@ -15,14 +14,8 @@ interface HomeSettings {
   heroButtonText: string;
   showProductsOnHome: boolean;
   showFeaturesSection: boolean;
-  showProtocolsSection: boolean;
-  showCtaSection: boolean;
   featuresSectionTitle: string;
-  protocolsSectionTitle: string;
   protocolsSectionSubtitle: string;
-  ctaTitle: string;
-  ctaSubtitle: string;
-  ctaButtonText: string;
 }
 
 interface Product {
@@ -136,101 +129,116 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* ── Hero Slider — Full Width, Text on Image ── */}
-      <section className="mt-[88px] relative w-full h-[450px] sm:h-[500px] lg:h-[520px] overflow-hidden bg-gradient-to-br from-[#ecfdf5] via-[#f0f9ff] to-[#ecfeff]">
-        {sliderImages.length > 0 ? (
-          <>
-            {sliderImages.map((img, idx) => (
-              <div
-                key={img.id}
-                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                  idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
-                }`}
-              >
-                <img src={img.imageUrl} alt={img.title} className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+      {/* ── Hero Section — Text Left, Slider Right ── */}
+      <section className="mt-[88px] relative overflow-hidden bg-gradient-to-br from-[#ecfdf5] via-[#f0f9ff] to-[#ecfeff]">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
-                <div className="relative z-20 h-full flex items-end pb-12 sm:pb-16">
-                  <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
-                    <div className="max-w-xl">
+            {/* Left — Hero Text */}
+            <div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-800 leading-[1.1] tracking-tight">
+                {settings?.heroTitle || "Professional Chat Hosting Platform"}
+              </h1>
+              <p className="mt-4 text-sm sm:text-base text-gray-500 leading-relaxed max-w-md">
+                {settings?.heroSubtitle || "Deploy fully managed chat servers with custom bots, real-time messaging, and enterprise-grade security."}
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/pricing" className="inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-sm font-bold rounded-xl uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/25 transition-all hover:-translate-y-0.5">
+                  {settings?.heroButtonText || "View Plans"} <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link href="/#features" className="inline-flex items-center gap-2 px-7 py-3 border-2 border-[#0ea5e9]/30 text-[#0ea5e9] text-sm font-bold rounded-xl uppercase tracking-wider hover:bg-[#0ea5e9]/5 transition-all">
+                  Explore Features
+                </Link>
+              </div>
+            </div>
+
+            {/* Right — Slider Image with Overlaid Captions */}
+            {sliderImages.length > 0 ? (
+              <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl shadow-gray-300/40" style={{ aspectRatio: "16/10" }}>
+                {sliderImages.map((img, idx) => (
+                  <div
+                    key={img.id}
+                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                      idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
+                    }`}
+                  >
+                    <img
+                      src={img.imageUrl}
+                      alt={img.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+
+                    <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 z-20">
                       {img.badge && (
-                        <span className="inline-block px-3 py-0.5 mb-3 rounded bg-[#0ea5e9] text-white text-[10px] font-bold uppercase tracking-wider">
+                        <span className="inline-block px-2.5 py-0.5 mb-2 rounded bg-[#0ea5e9] text-white text-[9px] font-bold uppercase tracking-wider">
                           {img.badge}
                         </span>
                       )}
                       {img.title && (
-                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight drop-shadow-2xl">
+                        <h2 className="text-lg sm:text-xl font-bold text-white leading-tight drop-shadow-lg">
                           {img.title}
                         </h2>
                       )}
                       {img.caption && (
-                        <p className="mt-3 text-sm sm:text-base text-white/85 leading-relaxed max-w-md drop-shadow-lg">
+                        <p className="mt-1 text-xs sm:text-sm text-white/80 leading-relaxed line-clamp-2 drop-shadow">
                           {img.caption}
                         </p>
                       )}
-                      <div className="mt-5 flex flex-wrap items-center gap-2.5">
-                        {img.tags && img.tags.split(",").map((tag) => tag.trim()).filter(Boolean).map((tag) => (
-                          <span key={tag} className="px-3 py-1 rounded border border-white/30 bg-white/10 backdrop-blur-sm text-white text-[10px] font-semibold tracking-wider">
-                            {tag}
-                          </span>
-                        ))}
-                        {img.linkUrl && (
-                          <a
-                            href={img.linkUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-5 py-1.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-[10px] font-bold rounded uppercase tracking-wider hover:shadow-lg transition-all hover:-translate-y-0.5"
-                          >
-                            View Details <ArrowRight className="h-3 w-3" />
-                          </a>
-                        )}
-                      </div>
+                      {img.tags && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {img.tags.split(",").map((tag) => tag.trim()).filter(Boolean).map((tag) => (
+                            <span key={tag} className="px-2 py-0.5 rounded border border-white/30 bg-white/10 backdrop-blur-sm text-white text-[9px] font-semibold tracking-wider">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {img.linkUrl && (
+                        <a
+                          href={img.linkUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 mt-3 px-4 py-1.5 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-[9px] font-bold rounded uppercase tracking-wider hover:shadow-lg transition-all"
+                        >
+                          View Details <ArrowRight className="h-3 w-3" />
+                        </a>
+                      )}
                     </div>
+                  </div>
+                ))}
+
+                {sliderImages.length > 1 && (
+                  <>
+                    <button onClick={prevSlide} className="absolute left-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-all text-white">
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button onClick={nextSlide} className="absolute right-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-all text-white">
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                    <div className="absolute bottom-2 right-5 z-30 flex gap-1.5">
+                      {sliderImages.map((_, idx) => (
+                        <button key={idx} onClick={() => setCurrentSlide(idx)} className={`h-1 rounded-full transition-all duration-300 ${idx === currentSlide ? "bg-[#0ea5e9] w-6" : "bg-white/40 w-3 hover:bg-white/60"}`} />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className="relative w-full rounded-2xl overflow-hidden bg-gradient-to-br from-[#0ea5e9]/10 to-[#10b981]/10 border border-gray-200/50 shadow-lg" style={{ aspectRatio: "16/10" }}>
+                <div className="absolute inset-0 flex items-center justify-center text-gray-300">
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto rounded-2xl bg-gray-100 flex items-center justify-center mb-3">
+                      <ArrowRight className="h-6 w-6 text-gray-300" />
+                    </div>
+                    <p className="text-sm font-medium">Slider images appear here</p>
                   </div>
                 </div>
               </div>
-            ))}
-
-            {sliderImages.length > 1 && (
-              <>
-                <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-all text-white">
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-all text-white">
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-                  {sliderImages.map((_, idx) => (
-                    <button key={idx} onClick={() => setCurrentSlide(idx)} className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? "bg-[#0ea5e9] w-8" : "bg-white/40 w-4 hover:bg-white/60"}`} />
-                  ))}
-                </div>
-              </>
             )}
-          </>
-        ) : (
-          <div className="relative h-full flex items-center">
-            <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "radial-gradient(circle at 20% 30%, #0ea5e9 0%, transparent 50%), radial-gradient(circle at 80% 70%, #10b981 0%, transparent 50%)" }} />
-            <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 w-full">
-              <div className="max-w-xl">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-800 leading-[1.1] tracking-tight">
-                  {settings?.heroTitle || "Professional Chat Hosting Platform"}
-                </h1>
-                <p className="mt-4 text-sm sm:text-base text-gray-500 leading-relaxed max-w-md">
-                  {settings?.heroSubtitle || "Deploy fully managed chat servers with custom bots, real-time messaging, and enterprise-grade security."}
-                </p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Link href="/pricing" className="inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-[#0ea5e9] to-[#10b981] text-white text-sm font-bold rounded-xl uppercase tracking-wider hover:shadow-lg hover:shadow-[#0ea5e9]/25 transition-all hover:-translate-y-0.5">
-                    {settings?.heroButtonText || "View Plans"} <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link href="/#features" className="inline-flex items-center gap-2 px-7 py-3 border-2 border-[#0ea5e9]/30 text-[#0ea5e9] text-sm font-bold rounded-xl uppercase tracking-wider hover:bg-[#0ea5e9]/5 transition-all">
-                    Explore Features
-                  </Link>
-                </div>
-              </div>
-            </div>
+
           </div>
-        )}
+        </div>
       </section>
 
       {/* ── Features Section — Boxed Grid ─────── */}
