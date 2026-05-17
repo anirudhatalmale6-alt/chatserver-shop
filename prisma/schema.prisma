@@ -232,6 +232,9 @@ model SiteSettings {
   pricingPageSubtitle  String  @default("From small communities to enterprise deployments. Pick the plan that fits your needs.") @map("pricing_page_subtitle") @db.Text
   contactPageTitle     String  @default("Contact Us") @map("contact_page_title") @db.VarChar(255)
   contactPageSubtitle  String  @default("Have a question or need help? Select a department and send us a message.") @map("contact_page_subtitle") @db.Text
+  contactAddress       String  @default("") @map("contact_address") @db.VarChar(500)
+  contactPhone         String  @default("") @map("contact_phone") @db.VarChar(100)
+  contactHours         String  @default("") @map("contact_hours") @db.VarChar(255)
 
   // Pricing Visibility
   hidePricingForGuests Boolean @default(false) @map("hide_pricing_for_guests")
