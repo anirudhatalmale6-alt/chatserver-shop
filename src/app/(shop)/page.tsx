@@ -154,7 +154,7 @@ export default function HomePage() {
 
             {/* Right — Slider Image with Overlaid Captions */}
             {sliderImages.length > 0 ? (
-              <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl shadow-gray-300/40" style={{ aspectRatio: "16/10" }}>
+              <div className="relative w-full h-[320px] sm:h-[400px] lg:h-[460px] rounded-2xl overflow-hidden shadow-2xl shadow-gray-300/40">
                 {sliderImages.map((img, idx) => (
                   <div
                     key={img.id}
@@ -167,11 +167,11 @@ export default function HomePage() {
                       alt={img.title}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#064e3b]/85 via-[#065f46]/20 to-transparent" />
 
                     <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 z-20">
                       {img.badge && (
-                        <span className="inline-block px-2.5 py-0.5 mb-2 rounded bg-[#0ea5e9] text-white text-[9px] font-bold uppercase tracking-wider">
+                        <span className="inline-block px-2.5 py-0.5 mb-2 rounded bg-[#10b981] text-white text-[9px] font-bold uppercase tracking-wider">
                           {img.badge}
                         </span>
                       )}
@@ -188,7 +188,7 @@ export default function HomePage() {
                       {img.tags && (
                         <div className="mt-2 flex flex-wrap gap-1.5">
                           {img.tags.split(",").map((tag) => tag.trim()).filter(Boolean).map((tag) => (
-                            <span key={tag} className="px-2 py-0.5 rounded border border-white/30 bg-white/10 backdrop-blur-sm text-white text-[9px] font-semibold tracking-wider">
+                            <span key={tag} className="px-2 py-0.5 rounded border border-[#10b981]/40 bg-[#10b981]/20 backdrop-blur-sm text-white text-[9px] font-semibold tracking-wider">
                               {tag}
                             </span>
                           ))}
@@ -225,7 +225,7 @@ export default function HomePage() {
                 )}
               </div>
             ) : (
-              <div className="relative w-full rounded-2xl overflow-hidden bg-gradient-to-br from-[#0ea5e9]/10 to-[#10b981]/10 border border-gray-200/50 shadow-lg" style={{ aspectRatio: "16/10" }}>
+              <div className="relative w-full h-[320px] sm:h-[400px] lg:h-[460px] rounded-2xl overflow-hidden bg-gradient-to-br from-[#0ea5e9]/10 to-[#10b981]/10 border border-gray-200/50 shadow-lg">
                 <div className="absolute inset-0 flex items-center justify-center text-gray-300">
                   <div className="text-center">
                     <div className="w-16 h-16 mx-auto rounded-2xl bg-gray-100 flex items-center justify-center mb-3">
