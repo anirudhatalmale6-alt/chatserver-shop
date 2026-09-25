@@ -1,10 +1,13 @@
 {
-  "name": "project",
-  "version": "1.0.0",
+  "name": "chatserver-shop",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "node canary.js && tsc",
-    "prepare": "node canary.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "seed": "npx tsx prisma/seed.ts"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
